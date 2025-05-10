@@ -1,47 +1,62 @@
-import { NextResponse } from 'next/server';
-import {connectDB} from "@/app/lib/mongodb";
-import Doctor from "@/app/models/Doctor";
-
-// POST: Add Doctor
-export async function POST(request: Request) {
-    try {
-        await connectDB();
-        const body = await request.json();
-
-        const newDoctor = new Doctor(body);
-        const savedDoctor = await newDoctor.save();
-
-        return NextResponse.json({
-            success: true,
-            data: savedDoctor
-        }, { status: 201 });
-
-    } catch (error: any) {
-        return NextResponse.json({
-            success: false,
-            error: error.message
-        }, { status: 400 });
-    }
-}
-
+// import { NextResponse } from 'next/server';
+// import {connectDB} from "@/app/lib/mongodb";
+// import Doctor from "@/app/models/Doctor";
+//
+// // POST: Add Doctor
+// export async function POST(request: Request) {
+//     try {
+//         await connectDB();
+//         const body = await request.json();
+//
+//         const newDoctor = new Doctor(body);
+//         const savedDoctor = await newDoctor.save();
+//
+//         return NextResponse.json({
+//             success: true,
+//             data: savedDoctor
+//         }, { status: 201 });
+//
+//     } catch (error: any) {
+//         return NextResponse.json({
+//             success: false,
+//             error: error.message
+//         }, { status: 400 });
+//     }
+// }
+//
 // export async function GET(request: Request) {
 //     try {
 //         await connectDB();
 //
-//         // URL query parameters
+//         // Extract query parameters
 //         const { searchParams } = new URL(request.url);
 //         const location = searchParams.get('location');
+//         const experience = searchParams.get('experience');
+//         const availability = searchParams.get('availability');
 //         const page = parseInt(searchParams.get('page') || '1');
 //         const limit = parseInt(searchParams.get('limit') || '10');
 //
-//         // MongoDB Query
+//         // Build MongoDB query
 //         const query: any = {};
 //         if (location) query.location = location;
 //
+//         // Experience filter
+//         if (experience) {
+//             const experienceNum = parseInt(experience);
+//             if (!isNaN(experienceNum)) {
+//                 query.experience = { $gte: experienceNum };
+//             }
+//         }
 //
+//         // Availability filter
+//         if (availability) {
+//             query.availability = { $in: [availability] };
+//         }
+//
+//         // Pagination
 //         const skip = (page - 1) * limit;
 //
-//
+//         // Fetch data
 //         const [doctors, total] = await Promise.all([
 //             Doctor.find(query).skip(skip).limit(limit),
 //             Doctor.countDocuments(query)
@@ -61,6 +76,41 @@ export async function POST(request: Request) {
 //         }, { status: 500 });
 //     }
 // }
+
+import { NextResponse } from 'next/server';
+import { connectDB } from "@/app/lib/mongodb";
+import Doctor from "@/app/models/Doctor";
+
+// Define interface for MongoDB query
+interface QueryParams {
+    location?: string;
+    experience?: { $gte: number };
+    availability?: { $in: string[] };
+}
+
+// POST: Add Doctor
+export async function POST(request: Request) {
+    try {
+        await connectDB();
+        const body = await request.json();
+
+        const newDoctor = new Doctor(body);
+        const savedDoctor = await newDoctor.save();
+
+        return NextResponse.json({
+            success: true,
+            data: savedDoctor
+        }, { status: 201 });
+
+    } catch (error: unknown) {
+        return NextResponse.json({
+            success: false,
+            error: error instanceof Error ? error.message : 'An error occurred'
+        }, { status: 400 });
+    }
+}
+
+// GET: List Doctors
 export async function GET(request: Request) {
     try {
         await connectDB();
@@ -73,8 +123,9 @@ export async function GET(request: Request) {
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '10');
 
-        // Build MongoDB query
-        const query: any = {};
+        // Build MongoDB query with proper typing
+        const query: QueryParams = {};
+
         if (location) query.location = location;
 
         // Experience filter
@@ -106,10 +157,10 @@ export async function GET(request: Request) {
             currentPage: page
         }, { status: 200 });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json({
             success: false,
-            error: error.message
+            error: error instanceof Error ? error.message : 'An error occurred'
         }, { status: 500 });
     }
 }

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import DoctorCard from "@/app/components/DoctorCard";
 
 interface Doctor {
@@ -12,6 +11,7 @@ interface Doctor {
     fee: number;
     availability: string[];
     rating: number;
+    photo: string;
 }
 
 export default function SpecialtyPage() {
@@ -23,7 +23,7 @@ export default function SpecialtyPage() {
         page: 1
     });
     const [totalPages, setTotalPages] = useState(1);
-    const searchParams = useSearchParams();
+
 
     const fetchDoctors = async () => {
         const query = new URLSearchParams({
