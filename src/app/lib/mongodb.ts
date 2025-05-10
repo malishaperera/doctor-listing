@@ -11,6 +11,8 @@ interface MongooseCache {
     promise: Promise<typeof mongoose> | null;
 }
 
+// ESLint exception for global type declaration
+// eslint-disable-next-line no-var
 declare global {
     var mongoose: MongooseCache;
 }
