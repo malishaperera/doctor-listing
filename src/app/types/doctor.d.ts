@@ -9,4 +9,5 @@ export interface IDoctor extends Document {
     fee: number;
     availability:  string[];
     rating: number;
+    photo: string;
 }

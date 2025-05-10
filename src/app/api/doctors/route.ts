@@ -24,15 +24,34 @@ export async function POST(request: Request) {
     }
 }
 
-// GET: List Doctors
-// export async function GET() {
+// export async function GET(request: Request) {
 //     try {
 //         await connectDB();
-//         const doctors = await Doctor.find({});
+//
+//         // URL query parameters
+//         const { searchParams } = new URL(request.url);
+//         const location = searchParams.get('location');
+//         const page = parseInt(searchParams.get('page') || '1');
+//         const limit = parseInt(searchParams.get('limit') || '10');
+//
+//         // MongoDB Query
+//         const query: any = {};
+//         if (location) query.location = location;
+//
+//
+//         const skip = (page - 1) * limit;
+//
+//
+//         const [doctors, total] = await Promise.all([
+//             Doctor.find(query).skip(skip).limit(limit),
+//             Doctor.countDocuments(query)
+//         ]);
 //
 //         return NextResponse.json({
 //             success: true,
-//             data: doctors
+//             data: doctors,
+//             totalPages: Math.ceil(total / limit),
+//             currentPage: page
 //         }, { status: 200 });
 //
 //     } catch (error: any) {
@@ -42,25 +61,39 @@ export async function POST(request: Request) {
 //         }, { status: 500 });
 //     }
 // }
-
 export async function GET(request: Request) {
     try {
         await connectDB();
 
-        // URL query parameters
+        // Extract query parameters
         const { searchParams } = new URL(request.url);
         const location = searchParams.get('location');
+        const experience = searchParams.get('experience');
+        const availability = searchParams.get('availability');
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '10');
 
-        // MongoDB Query
+        // Build MongoDB query
         const query: any = {};
         if (location) query.location = location;
 
+        // Experience filter
+        if (experience) {
+            const experienceNum = parseInt(experience);
+            if (!isNaN(experienceNum)) {
+                query.experience = { $gte: experienceNum };
+            }
+        }
 
+        // Availability filter
+        if (availability) {
+            query.availability = { $in: [availability] };
+        }
+
+        // Pagination
         const skip = (page - 1) * limit;
 
-
+        // Fetch data
         const [doctors, total] = await Promise.all([
             Doctor.find(query).skip(skip).limit(limit),
             Doctor.countDocuments(query)

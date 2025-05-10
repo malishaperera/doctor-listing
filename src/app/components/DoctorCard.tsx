@@ -1,4 +1,5 @@
-import React from 'react';
+// components/DoctorCard.tsx
+import Image from 'next/image';
 
 interface Doctor {
     _id: string;
@@ -9,14 +10,24 @@ interface Doctor {
     fee: number;
     availability: string[];
     rating: number;
+    photo: string;
 }
 
 export default function DoctorCard({ doctor }: { doctor: Doctor }) {
     return (
         <div className="bg-gray-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="flex gap-4">
-                {/* Doctor Image (Placeholder) */}
-                <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
+                {/* Doctor Image */}
+                <div className="relative w-24 h-24 rounded-full overflow-hidden">
+                    <Image
+                        src={doctor.photo || '/default-doctor.jpg'}
+                        alt={doctor.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        priority={false}
+                    />
+                </div>
 
                 {/* Doctor Details */}
                 <div className="flex-1">
@@ -30,13 +41,13 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
 
                     {/* Availability */}
                     <div className="mt-2 flex gap-2 flex-wrap">
-                        {(Array.isArray(doctor.availability) ? doctor.availability : []).map((time, index) => (
+                        {doctor.availability.map((time, index) => (
                             <span
                                 key={index}
                                 className="bg-teal-100 text-teal-800 px-2 py-1 rounded text-sm"
                             >
-                        {time}
-                    </span>
+                                {time}
+                            </span>
                         ))}
                     </div>
 
@@ -50,6 +61,5 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
                 </div>
             </div>
         </div>
-
     );
 }

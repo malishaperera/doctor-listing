@@ -12,7 +12,12 @@ const DoctorSchema = new Schema<IDoctor>({
         enum: ['Available Today', 'Available Tomorrow'],
         default: ['Available Today']
     },
-    rating: { type: Number, default: 4.5 }
+    rating: { type: Number, default: 4.5 },
+    photo: {
+        type: String,
+        required: false,
+        default: 'https://via.placeholder.com/150'
+    }
 });
 
 export default models.Doctor || model<IDoctor>('Doctor', DoctorSchema);
