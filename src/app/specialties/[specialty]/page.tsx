@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import DoctorCard from "@/app/components/DoctorCard";
 
 interface Doctor {
@@ -26,7 +26,15 @@ export default function SpecialtyPage() {
     const [totalPages, setTotalPages] = useState(1);
 
 
-    const fetchDoctors = async () => {
+    // const fetchDoctors = async () => {
+    //     const query = new URLSearchParams({
+    //         location: filters.location,
+    //         experience: filters.experience,
+    //         availability: filters.availability,
+    //         fee: filters.fee,
+    //         page: filters.page.toString()
+    //     }).toString();
+    const fetchDoctors = useCallback(async () => {
         const query = new URLSearchParams({
             location: filters.location,
             experience: filters.experience,
@@ -46,11 +54,11 @@ export default function SpecialtyPage() {
         } catch (error) {
             console.error("Error fetching doctors:", error);
         }
-    };
+    }, [filters]);
 
     useEffect(() => {
         fetchDoctors();
-    }, [filters]);
+    }, [fetchDoctors, filters]);
 
     // const handleAvailabilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //     const isChecked = e.target.checked;
