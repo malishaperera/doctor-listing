@@ -14,13 +14,24 @@ interface Doctor {
 }
 
 export default function DoctorCard({ doctor }: { doctor: Doctor }) {
+    const getImageSrc = () => {
+        if (!doctor.photo) {
+            return '/default-doctor.jpg';
+        }
+        // Check if it's an absolute URL
+        if (doctor.photo.startsWith('http://') || doctor.photo.startsWith('https://')) {
+            return doctor.photo;
+        }
+        // Prepend slash for local images if missing
+        return doctor.photo.startsWith('/') ? doctor.photo : `/${doctor.photo}`;
+    };
     return (
         <div className="bg-gray-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="flex gap-4">
                 {/* Doctor Image */}
                 <div className="relative w-24 h-24 rounded-full overflow-hidden">
                     <Image
-                        src={doctor.photo || '/default-doctor.jpg'}
+                        src={getImageSrc()}
                         alt={doctor.name}
                         fill
                         className="object-cover"
@@ -31,7 +42,7 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
 
                 {/* Doctor Details */}
                 <div className="flex-1">
-                    <h3 className="text-2xl font-semibold text-blue-700">{doctor.name}</h3>
+                    <h3 className="text-2xl font-semibold text-blue-700">Dr.{doctor.name}</h3>
                     <p className="text-gray-700">{doctor.specialty}</p>
 
                     <div className="mt-2 flex items-center gap-4">
@@ -53,7 +64,7 @@ export default function DoctorCard({ doctor }: { doctor: Doctor }) {
 
                     {/* Consultation Fee */}
                     <div className="mt-4 flex justify-between items-center">
-                        <span className="text-xl font-bold text-gray-800">LKR {doctor.fee}</span>
+                        <span className="text-xl font-bold text-gray-800">₹ {doctor.fee}</span>
                         <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
                             Book Now
                         </button>

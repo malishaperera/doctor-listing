@@ -20,6 +20,7 @@ export default function SpecialtyPage() {
         location: '',
         experience: '',
         availability: '',
+        fee: '',
         page: 1
     });
     const [totalPages, setTotalPages] = useState(1);
@@ -30,6 +31,7 @@ export default function SpecialtyPage() {
             location: filters.location,
             experience: filters.experience,
             availability: filters.availability,
+            fee: filters.fee,
             page: filters.page.toString()
         }).toString();
 
@@ -50,15 +52,15 @@ export default function SpecialtyPage() {
         fetchDoctors();
     }, [filters]);
 
-    const handleAvailabilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const isChecked = e.target.checked;
-        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-        setFilters(prev => ({
-            ...prev,
-            availability: isChecked ? today : '',
-            page: 1
-        }));
-    };
+    // const handleAvailabilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const isChecked = e.target.checked;
+    //     const today = new Date().toISOString().split('T')[0];
+    //     setFilters(prev => ({
+    //         ...prev,
+    //         availability: isChecked ? today : '',
+    //         page: 1
+    //     }));
+    // };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -80,6 +82,13 @@ export default function SpecialtyPage() {
                             <option value="Colombo">Colombo</option>
                             <option value="Kandy">Kandy</option>
                             <option value="Galle">Galle</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Trincomalee">Trincomalee</option>
+                            <option value="Negombo">Negombo</option>
                         </select>
 
                         {/* Experience Filter */}
@@ -93,24 +102,38 @@ export default function SpecialtyPage() {
                             }))}
                         >
                             <option value="">All Experience</option>
-                            <option value="5">5+ years</option>
-                            <option value="10">10+ years</option>
-                            <option value="15">15+ years</option>
+                            <option value="0-5">0-5 years</option>
+                            <option value="6-10">6-10 years</option>
+                            <option value="11-16">11-16 years</option>
                         </select>
 
                         {/* Availability Filter */}
-                        <div className="flex items-center gap-2 p-2">
-                            <input
-                                type="checkbox"
-                                id="availableToday"
-                                checked={filters.availability !== ''}
-                                onChange={handleAvailabilityChange}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                            />
-                            <label htmlFor="availableToday" className="text-gray-700">
-                                Available Today
-                            </label>
-                        </div>
+                        {/*<div className="flex items-center gap-2 p-2">*/}
+                        {/*    <input*/}
+                        {/*        type="checkbox"*/}
+                        {/*        id="availableToday"*/}
+                        {/*        checked={filters.availability !== ''}*/}
+                        {/*        onChange={handleAvailabilityChange}*/}
+                        {/*        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"*/}
+                        {/*    />*/}
+                        {/*    <label htmlFor="availableToday" className="text-gray-700">*/}
+                        {/*        Available Today*/}
+                        {/*    </label>*/}
+                        {/*</div>*/}
+                        <select
+                            className="p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                            value={filters.fee}
+                            onChange={(e) => setFilters(prev => ({
+                                ...prev,
+                                fee: e.target.value,
+                                page: 1
+                            }))}
+                        >
+                            <option value="">All Fees</option>
+                            <option value="100-500">100-500 LKR</option>
+                            <option value="500-1000">500-1000 LKR</option>
+                            <option value="1000-">1000+ LKR</option>
+                        </select>
                     </div>
                 </div>
 

@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 
-
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
@@ -24,7 +23,6 @@ export default async function mediaUpload(file: File): Promise<string> {
                 console.error("Supabase Upload Error:", error);
                 throw new Error(error.message || "Failed to upload file to Supabase.");
             }
-
         }
 
         const { data } = supabase.storage.from("images").getPublicUrl(fileName);

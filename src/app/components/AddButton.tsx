@@ -1,8 +1,7 @@
-// components/AddDoctorButton.tsx
 "use client";
-
 import { useState } from 'react';
 import mediaUpload from '../utils/mediaUpload';
+import Image from 'next/image';
 
 interface DoctorForm {
     name: string;
@@ -21,7 +20,7 @@ export default function AddDoctorButton() {
     const [formData, setFormData] = useState<DoctorForm>({
         name: '',
         specialty: 'General Physician',
-        experience: 0,
+        experience: 2,
         location: 'Colombo',
         fee: 0,
         availability: [],
@@ -65,7 +64,7 @@ export default function AddDoctorButton() {
                 setFormData({
                     name: '',
                     specialty: 'General Physician',
-                    experience: 0,
+                    experience: 1,
                     location: 'Colombo',
                     fee: 0,
                     availability: [],
@@ -119,6 +118,9 @@ export default function AddDoctorButton() {
                                 >
                                     <option value="General Physician">General Physician</option>
                                     <option value="Cardiologist">Cardiologist</option>
+                                    <option value="Dermatologist">Dermatologist</option>
+                                    <option value="Pediatrician">Pediatrician</option>
+                                    <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
                                 </select>
                             </div>
 
@@ -129,7 +131,10 @@ export default function AddDoctorButton() {
                                     required
                                     className="w-full p-2 border rounded"
                                     value={formData.experience}
-                                    onChange={(e) => setFormData({...formData, experience: Number(e.target.value)})}
+                                    onChange={(e) => {
+                                        const value = Math.min(Math.max(Number(e.target.value), 0), 16);
+                                        setFormData({...formData, experience: value});
+                                    }}
                                 />
                             </div>
 
@@ -142,17 +147,28 @@ export default function AddDoctorButton() {
                                 >
                                     <option value="Colombo">Colombo</option>
                                     <option value="Kandy">Kandy</option>
+                                    <option value="Galle">Galle</option>
+                                    <option value="Jaffna">Jaffna</option>
+                                    <option value="Matara">Matara</option>
+                                    <option value="Kurunegala">Kurunegala</option>
+                                    <option value="Anuradhapura">Anuradhapura</option>
+                                    <option value="Batticaloa">Batticaloa</option>
+                                    <option value="Trincomalee">Trincomalee</option>
+                                    <option value="Negombo">Negombo</option>
                                 </select>
                             </div>
 
                             <div>
-                                <label>Fee (LKR)</label>
+                                <label>Fee (₹)</label>
                                 <input
                                     type="number"
                                     required
                                     className="w-full p-2 border rounded"
                                     value={formData.fee}
-                                    onChange={(e) => setFormData({...formData, fee: Number(e.target.value)})}
+                                    onChange={(e) => {
+                                        const value = Math.max(Number(e.target.value), 0);
+                                        setFormData({...formData, fee: value});
+                                    }}
                                 />
                             </div>
 
@@ -166,10 +182,12 @@ export default function AddDoctorButton() {
                                     disabled={isUploading}
                                 />
                                 {previewImage && (
-                                    <img
+                                    <Image
                                         src={previewImage}
                                         alt="Preview"
                                         className="mt-2 w-full h-48 object-cover rounded-lg border"
+                                        width={400}
+                                        height={300}
                                     />
                                 )}
                                 {isUploading && <p className="text-sm text-gray-500">Uploading...</p>}
@@ -198,4 +216,3 @@ export default function AddDoctorButton() {
         </div>
     );
 }
-// Ar4V7PjUu0Jh1oYg

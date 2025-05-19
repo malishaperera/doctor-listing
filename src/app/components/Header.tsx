@@ -1,3 +1,4 @@
+"use client"
 import Link from 'next/link';
 
 export default function Header() {
@@ -9,7 +10,6 @@ export default function Header() {
                     Apollo Clone
                 </Link>
 
-                {/* Navigation (Static UI Only) */}
                 <nav className="flex gap-6">
                     <span className="text-gray-600">Doctors</span>
                     <span className="text-gray-600">Consultation</span>

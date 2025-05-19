@@ -16,7 +16,7 @@ const DoctorSchema = new Schema<IDoctor>({
     photo: {
         type: String,
         required: false,
-        default: 'https://via.placeholder.com/150'
+        default: 'default-doctor.jpg'
     }
 });
 
