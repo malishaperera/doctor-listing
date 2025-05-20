@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-// import connectDB from '@/app/lib/mongodb';
-import Doctor from '@/app/models/Doctor';
+// import { connectDB } from "@/app/lib/mongodb";
+import Doctor from "@/app/models/Doctor";
+import {connectDB} from "@/app/lib/mongodb";
 
+// Define interface for MongoDB query
 interface QueryParams {
     location?: string;
     experience?: { $gte?: number; $lte?: number };
@@ -9,6 +11,7 @@ interface QueryParams {
     availability?: { $in: string[] };
 }
 
+// POST: Add Doctor
 export async function POST(request: Request) {
     try {
         await connectDB();
@@ -23,11 +26,9 @@ export async function POST(request: Request) {
         }, { status: 201 });
 
     } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('POST Error:', errorMessage);
         return NextResponse.json({
             success: false,
-            error: 'Failed to create doctor'
+            error: error instanceof Error ? error.message : 'An error occurred'
         }, { status: 400 });
     }
 }
@@ -35,43 +36,46 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     try {
         await connectDB();
+
         const { searchParams } = new URL(request.url);
-
         const query: QueryParams = {};
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = 10;
-        const skip = (page - 1) * limit;
 
-        // Build filters
+        // Location filter
         const location = searchParams.get('location');
         if (location) query.location = location;
 
+        // Experience range filter
         const experienceRange = searchParams.get('experience');
         if (experienceRange) {
             const [minExp, maxExp] = experienceRange.split('-').map(Number);
-            query.experience = {
-                ...(!isNaN(minExp) && { $gte: minExp }),
-                ...(!isNaN(maxExp) && { $lte: maxExp })
-            };
+            query.experience = {};
+
+            if (!isNaN(minExp)) query.experience.$gte = minExp;
+            if (!isNaN(maxExp)) query.experience.$lte = maxExp;
         }
 
+        // Fee range filter
         const feeRange = searchParams.get('fee');
         if (feeRange) {
-            const [min, max] = feeRange.split('-');
-            const minFee = parseInt(min);
-            const maxFee = max ? parseInt(max) : null;
+            const [minFee, maxFee] = feeRange.split('-').map(Number);
+            query.fee = {};
 
-            query.fee = {
-                ...(!isNaN(minFee) && { $gte: minFee }),
-                ...(maxFee && !isNaN(maxFee) && { $lte: maxFee })
-            };
+            if (!isNaN(minFee)) query.fee.$gte = minFee;
+            if (!isNaN(maxFee)) query.fee.$lte = maxFee;
         }
 
+        // Availability filter
         const availability = searchParams.get('availability');
         if (availability) {
             query.availability = { $in: [availability] };
         }
 
+        // Pagination
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '10');
+        const skip = (page - 1) * limit;
+
+        // Fetch data
         const [doctors, total] = await Promise.all([
             Doctor.find(query).skip(skip).limit(limit),
             Doctor.countDocuments(query)
@@ -82,14 +86,12 @@ export async function GET(request: Request) {
             data: doctors,
             totalPages: Math.ceil(total / limit),
             currentPage: page
-        });
+        }, { status: 200 });
 
     } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        console.error('GET Error:', errorMessage);
         return NextResponse.json({
             success: false,
-            error: 'Failed to fetch doctors'
+            error: error instanceof Error ? error.message : 'An error occurred'
         }, { status: 500 });
     }
 }
