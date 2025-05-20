@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/app/lib/mongodb';
+// import connectDB from '@/app/lib/mongodb';
 import Doctor from '@/app/models/Doctor';
 
 interface QueryParams {
