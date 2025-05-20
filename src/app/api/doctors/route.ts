@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from "@/app/lib/mongodb";
+// import { connectDB } from "@/app/lib/mongodb";
 import Doctor from "@/app/models/Doctor";
 
 // Define interface for MongoDB query
@@ -13,7 +13,6 @@ interface QueryParams {
 // POST: Add Doctor
 export async function POST(request: Request) {
     try {
-        await connectDB();
         const body = await request.json();
 
         const newDoctor = new Doctor(body);
@@ -34,8 +33,6 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
     try {
-        await connectDB();
-
         const { searchParams } = new URL(request.url);
         const query: QueryParams = {};
 

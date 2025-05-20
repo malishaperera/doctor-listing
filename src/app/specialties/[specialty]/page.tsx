@@ -1,5 +1,5 @@
 "use client";
-import {useCallback, useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import DoctorCard from "@/app/components/DoctorCard";
 
 interface Doctor {
@@ -26,15 +26,7 @@ export default function SpecialtyPage() {
     const [totalPages, setTotalPages] = useState(1);
 
 
-    // const fetchDoctors = async () => {
-    //     const query = new URLSearchParams({
-    //         location: filters.location,
-    //         experience: filters.experience,
-    //         availability: filters.availability,
-    //         fee: filters.fee,
-    //         page: filters.page.toString()
-    //     }).toString();
-    const fetchDoctors = useCallback(async () => {
+    const fetchDoctors = async () => {
         const query = new URLSearchParams({
             location: filters.location,
             experience: filters.experience,
@@ -54,21 +46,11 @@ export default function SpecialtyPage() {
         } catch (error) {
             console.error("Error fetching doctors:", error);
         }
-    }, [filters]);
+    };
 
     useEffect(() => {
         fetchDoctors();
-    }, [fetchDoctors, filters]);
-
-    // const handleAvailabilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const isChecked = e.target.checked;
-    //     const today = new Date().toISOString().split('T')[0];
-    //     setFilters(prev => ({
-    //         ...prev,
-    //         availability: isChecked ? today : '',
-    //         page: 1
-    //     }));
-    // };
+    }, [filters]);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -114,20 +96,6 @@ export default function SpecialtyPage() {
                             <option value="6-10">6-10 years</option>
                             <option value="11-16">11-16 years</option>
                         </select>
-
-                        {/* Availability Filter */}
-                        {/*<div className="flex items-center gap-2 p-2">*/}
-                        {/*    <input*/}
-                        {/*        type="checkbox"*/}
-                        {/*        id="availableToday"*/}
-                        {/*        checked={filters.availability !== ''}*/}
-                        {/*        onChange={handleAvailabilityChange}*/}
-                        {/*        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"*/}
-                        {/*    />*/}
-                        {/*    <label htmlFor="availableToday" className="text-gray-700">*/}
-                        {/*        Available Today*/}
-                        {/*    </label>*/}
-                        {/*</div>*/}
                         <select
                             className="p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
                             value={filters.fee}
